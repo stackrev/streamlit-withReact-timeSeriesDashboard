@@ -27,6 +27,11 @@
     "lint": "eslint --ext .ts --ext .tsx . --fix",
     "prepare": "cd .. && husky install frontend/.husky"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "eslintConfig": {
     "extends": [
       "react-app"
