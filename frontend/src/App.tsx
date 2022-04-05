@@ -45,8 +45,8 @@ const options = {
   },
   series: [
     {
-      name: 'AAPL',
-      data: APPL_TS,
+      name: null,
+      data: null,
       tooltip: {
         valueDecimals: 2,
       },
@@ -62,6 +62,14 @@ class App extends StreamlitComponentBase<State> {
   public state = { data: APPL_TS };
 
   public render = (): ReactNode => {
+    const title = this.props.args['title'];
+    const data = this.props.args['data'];
+
+    options.series[0].name = title;
+    options.series[0].data = data;
+
+    Streamlit.setComponentValue('OK!');
+
     return (
       <div>
         <HighchartsReact
