@@ -12,7 +12,6 @@ _app = components.declare_component(
     "app", path="../frontend/build",
 )
 
-
 def load_component():
     return _app(data=APPL_TS, title="APPL")
 

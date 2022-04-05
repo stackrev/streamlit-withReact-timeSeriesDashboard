@@ -43,3 +43,25 @@ _ts_component = components.declare_component(
 This allows us to built the UI seperately from the python code.
 
 ## Passing data across.
+
+Data is read into the React component directly:
+
+```tsx
+const title = this.props.args?.title ?? 'temp';
+const data = this.props.args?.data ?? APPL_TS;
+```
+
+This is provided when stream lit calls the component and passes properties:
+
+```python
+def load_component():
+  return _app(data=APPL_TS, title="APPL")
+```
+
+The app passes data back into streamlit using:
+```tsx
+Streamlit.setComponentValue(e.target.value);
+```
+
+Each time this is done, the streamlit app is reloaded.
+

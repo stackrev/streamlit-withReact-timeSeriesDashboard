@@ -3,7 +3,7 @@ import {
   StreamlitComponentBase,
   withStreamlitConnection,
 } from 'streamlit-component-lib';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, ChangeEvent } from 'react';
 
 import Highcharts from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official';
@@ -16,7 +16,8 @@ import StockTools from 'highcharts/modules/stock-tools.js';
 
 import './App.css';
 
-import APPL_TS from './aapl-c.json';
+// import APPL_TS from './aapl-c.json'; // use this to test without streamlit
+const APPL_TS = null;
 
 // init the module
 Indicators(Highcharts);
@@ -55,20 +56,29 @@ const options = {
 };
 
 interface State {
-  data: number[][];
+  data: number[][] | null;
+  code: string;
 }
 
 class App extends StreamlitComponentBase<State> {
-  public state = { data: APPL_TS };
+  public state = { data: APPL_TS, code: '' };
+
+  public keyDown = (e: ChangeEvent<HTMLTextAreaElement>): void => {
+    e.preventDefault();
+    Streamlit.setComponentValue(e.target.value);
+  };
+
+  public onChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
+    e.preventDefault();
+    this.setState({ code: e.target.value });
+  };
 
   public render = (): ReactNode => {
-    const title = this.props.args['title'];
-    const data = this.props.args['data'];
+    const title = this.props.args?.title ?? 'temp';
+    const data = this.props.args?.data ?? APPL_TS;
 
     options.series[0].name = title;
     options.series[0].data = data;
-
-    Streamlit.setComponentValue('OK!');
 
     return (
       <div>
@@ -77,10 +87,17 @@ class App extends StreamlitComponentBase<State> {
           constructorType={'stockChart'}
           options={options}
         />
+        <textarea
+          value={this.state.code}
+          onInput={this.keyDown}
+          onChange={this.onChange}
+          rows={25}
+          cols={50}
+        />
       </div>
     );
   };
 }
 
-//export default App; // run this as standalone.
+// export default App; // run this as standalone.
 export default withStreamlitConnection(App);

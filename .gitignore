@@ -179,3 +179,5 @@ Thumbs.db
 
 **/yarn.lock
 **/package.lock
+
+**/.eslintcache
