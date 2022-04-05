@@ -3,13 +3,13 @@ import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
 
-_selectable_data_table = components.declare_component(
-    "selectable_data_table", path="../frontend/build",
+_app = components.declare_component(
+    "app", path="../frontend/build",
 )
 
 
-def selectable_data_table(data, key=None):
-    return _selectable_data_table(data=data, default=[], key=key)
+def load_component(data, key=None):
+    return _app(data=data, default=[], key=key)
 
 
 raw_data = {
@@ -19,6 +19,5 @@ raw_data = {
 }
 df = pd.DataFrame(raw_data, columns=["First Name", "Last Name", "Age"])
 
-rows = selectable_data_table(df)
-if rows:
-    st.write("You have selected", rows)
+app = load_component(df)
+st.write(app)
