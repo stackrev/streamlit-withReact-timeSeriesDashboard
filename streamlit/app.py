@@ -1,6 +1,9 @@
 import pandas as pd
 
 import streamlit as st
+
+st.set_page_config(layout="wide")
+
 import streamlit.components.v1 as components
 import json
 
@@ -17,4 +20,5 @@ def load_component():
 
 
 app = load_component()
+
 st.write(app)

@@ -3,7 +3,7 @@ import {
   StreamlitComponentBase,
   withStreamlitConnection,
 } from 'streamlit-component-lib';
-import React, { ReactNode, ChangeEvent } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 
 import Highcharts from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official';
@@ -13,6 +13,8 @@ import AnnotationsAdvanced from 'highcharts/modules/annotations-advanced.js';
 import PriceIndicator from 'highcharts/modules/price-indicator.js';
 import FullScreen from 'highcharts/modules/full-screen.js';
 import StockTools from 'highcharts/modules/stock-tools.js';
+
+import QuantTextArea from './QuantTextArea';
 
 import './App.css';
 
@@ -55,22 +57,31 @@ const options = {
   ],
 };
 
-interface State {
+export type State = {
   data: number[][] | null;
   code: string;
-}
+};
+
+export type Props = {
+  parentCallback: (value: string) => void;
+  onChange: (value: string) => void;
+  code: string;
+};
 
 class App extends StreamlitComponentBase<State> {
-  public state = { data: APPL_TS, code: '' };
+  componentDidMount(): void {
+    // important to set streamlit height again.
+    Streamlit.setFrameHeight(900);
+  }
 
-  public keyDown = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-    e.preventDefault();
-    Streamlit.setComponentValue(e.target.value);
+  public state = { data: APPL_TS, code: '# type your python here...' };
+
+  public keyDown = (value: string): void => {
+    Streamlit.setComponentValue(value);
   };
 
-  public onChange = (e: ChangeEvent<HTMLTextAreaElement>): void => {
-    e.preventDefault();
-    this.setState({ code: e.target.value });
+  public onChange = (value: string): void => {
+    this.setState({ code: value });
   };
 
   public render = (): ReactNode => {
@@ -87,17 +98,15 @@ class App extends StreamlitComponentBase<State> {
           constructorType={'stockChart'}
           options={options}
         />
-        <textarea
-          value={this.state.code}
-          onInput={this.keyDown}
+        <QuantTextArea
+          parentCallback={this.keyDown}
           onChange={this.onChange}
-          rows={25}
-          cols={50}
+          code={this.state.code}
         />
       </div>
     );
   };
 }
 
-// export default App; // run this as standalone.
+//export default App; // run this as standalone.
 export default withStreamlitConnection(App);
